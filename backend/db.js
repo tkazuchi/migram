@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { DATABASE_URL } = require("./config");
 const SALT_WORK_FACTOR = 10;
 
-mongoose.connect(
-  "mongodb+srv://stakezo64:dJzMJhWlJiDvxpVC@cluster0.2gsfbqz.mongodb.net/migram"
-);
+mongoose.connect(DATABASE_URL);
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -68,7 +67,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
