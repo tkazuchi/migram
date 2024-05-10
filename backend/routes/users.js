@@ -5,7 +5,7 @@ const { ERROR_MESSAGES } = require("../utils/errorMessages");
 const { JWT_SECRET } = require("../config");
 const bcrypt = require("bcrypt");
 
-const { userSignupValidator } = require("../validators/userValidators");
+const { userSignupValidator, userSigninValidator } = require("../validators/userValidators");
 
 //Sign Up Route
 router.post("/signup", async (req, res) => {
@@ -58,13 +58,25 @@ router.post("/signup", async (req, res) => {
 //Sign In Route
 router.post("/signin", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const body = req.body;
+    const result = userSigninValidator.safeParse(body);
 
+    if (!result.success) {
+      const errors = result.error.errors.map((err) => err.message);
+      return res.status(400).json({ errors });
+    }
+
+    const { username, password } = body;
     //login via email or username
     const user = await User.findOne({
       $or: [{ username }, { email: username }],
     }).select("+password");
 
+    if(!user){
+      return res.status(401).json({
+        message: ERROR_MESSAGES.INVALID_USERNAME_OR_PASSWORD,
+      });
+    }
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -97,6 +109,23 @@ router.get("/", async (req, res) => {
     console.error(ERROR_MESSAGES.ERROR_RETRIEVING_USERS + ": ", error);
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
   }
+});
+
+router.get("/:id", async (req, res) => {
+  try{
+    const id = req.params.id;
+    const user = await User.findById(id);
+    
+    res.status(200).json(user)
+  } catch (error){
+    console.error(ERROR_MESSAGES.USER_NOT_FOUND + " : " + error);
+    res.status(404).json({
+      message: ERROR_MESSAGES.USER_NOT_FOUND
+    })
+  }
+  
+
+
 });
 
 module.exports = router;

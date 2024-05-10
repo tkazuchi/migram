@@ -1,0 +1,6 @@
+.main_container {
+    height: calc(100vh - 64px);
+}
+.content_container {
+    flex: 1;
+}

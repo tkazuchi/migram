@@ -16,7 +16,13 @@ const userSignupValidator = z.object({
   lastName: z.string(),
 });
 
+const userSigninValidator = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+
 
 module.exports = {
-    userSignupValidator: userSignupValidator
+    userSignupValidator: userSignupValidator,
+    userSigninValidator: userSigninValidator
 }

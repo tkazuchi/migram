@@ -16,6 +16,7 @@ const ERROR_MESSAGES = {
     UNAUTHORIZED_ACCESS: 'Unauthorized Access',
     USERNAME_OR_EMAIL_TAKEN: 'Email or Username already taken',
     USER_CREATED_SUCCESSFULLY: 'User created successfully',
+    USER_NOT_FOUND: 'User not found'
 };
 
 module.exports = {
